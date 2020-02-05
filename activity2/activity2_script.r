@@ -11,6 +11,7 @@ heights[1]
 heights[2:3]
 
 datW <- read.csv("y:\\Students\\atekle\\a02\\2011124.csv")
+
 str(datW)
 
 ################
@@ -296,7 +297,7 @@ points(x.plot3,
 
 h4 <- hist(datW$TAVE[datW$siteN == 4],
            freq=FALSE, 
-           main = paste(levels(datW$NAME)[1]),
+           main = paste(levels(datW$NAME)[4]),
            xlab = "Average daily temperature (degrees C)", 
            ylab="Relative frequency",
            col="red",
@@ -350,18 +351,52 @@ hist(datW$PRCP[datW$siteN == 1],
 
 ###################
 ##Queston 8
-#histogram of daily precipitation for Aberdeen 
-total.precipitation.bysite <- aggregate(datW$PRCP, by=list(datW$NAME), FUN="sum",na.rm=TRUE)
-total.precipitation.bysite
+#get the sum across all sites and years
+#here we want to use the na.rm arguments specific to
+
 total.prcp.by.siteandyear<-aggregate(datW$PRCP, by=list(datW$NAME,datW$year), FUN="sum",na.rm=TRUE)
+#name the columns
 colnames(total.prcp.by.siteandyear) <- c("NAME","year","T.PRCP")
+#convert level to number for factor data type
+total.prcp.by.siteandyear$siteN<-as.numeric(total.prcp.by.siteandyear$NAME)
 
+#histogram of annual precipitation for Aberdeen 
+par(mfrow=c(1,1))
+f1<-hist(total.prcp.by.siteandyear$T.PRCP[total.prcp.by.siteandyear$siteN == 1],
+     freq=FALSE, 
+     main = paste(levels(total.prcp.by.siteandyear$NAME)[1]),
+     xlab = "Annual precipitation", 
+     ylab="Relative frequency",
+     col="grey50",
+     border="white")
+#the seq function generates a sequence of numbers that we can use to plot the normal across the range of temperature values
+x.plot6 <- seq(1000,3000, length.out = 5000)
+#the dnorm function will produce the probability density based on a mean and standard deviation.
 
+y.plot6 <-  dnorm(seq(1000,3000, length.out = 5000),
+                  mean(total.prcp.by.siteandyear$T.PRCP[total.prcp.by.siteandyear$siteN == 1],na.rm=TRUE),
+                  sd(total.prcp.by.siteandyear$T.PRCP[total.prcp.by.siteandyear$siteN == 1],na.rm=TRUE))
+#create a density that is scaled to fit in the plot  since the density has a different range from the data density.
+#!!! this is helpful for putting multiple things on the same plot
+#!!! It might seem confusing at first. It means the maximum value of the plot is always the same between the two datasets on the plot. Here both plots share zero as a minimum.
+y.scaled6 <- (max(f1$density)/max(y.plot6)) * y.plot6
 
+#points function adds points or lines to a graph  
+#the first two arguements are the x coordinates and the y coordinates.
+
+points(x.plot6,
+       y.scaled6, 
+       type = "l", 
+       col = "royalblue3",
+       lwd = 3, 
+       lty = 1)
 ###################
 ##Queston 9
-avg.precipitation.bysite <- aggregate(datW$PRCP, by=list(datW$NAME), FUN="mean",na.rm=TRUE)
+#get the mean across all sites and years
+#here we want to use the na.rm arguments specific to
+avg.precipitation.bysite <- aggregate(total.prcp.by.siteandyear$T.PRCP, by=list(total.prcp.by.siteandyear$NAME), FUN="mean",na.rm=TRUE)
 avg.precipitation.bysite
+
 ###################
 ##Queston 10
 #Please refer to the word document.
