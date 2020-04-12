@@ -223,7 +223,7 @@ na.rm(datDnew)
 # points(datD$doy[datP.count$all24 ==1], lightscale[lightscale > 0],
 #         col= "tomato3", pch=19)
 
-plot(datDnew$doy[datDnew$year==2009],datDnew$discharge[datDnew$year==2009], col="black")
+plot(datDnew$doy[datDnew$year==2009],datDnew$discharge[datDnew$year==2009], col="black",xlab="days in 2009",ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")))
 #plot points when all precipitation measurements are available   
 
 points(datDnew$doy[which(datDnew$year==2009 & datDnew$all24 ==1),],datDnew$discharge[datDnew$year==2009,datDnew$all24 ==1],
